@@ -352,7 +352,7 @@ export default function QuotationsClient({ initialQuotations }: any) {
                         
                         {q.status === 'accepted' ? (
                            <Link 
-                              href={q.invoice_id ? `/dashboard/invoices/${q.invoice_id}` : `/dashboard/invoices`} 
+                              href={`/dashboard/invoices`} 
                               className="px-2 py-1 bg-green-100 text-green-700 hover:bg-green-200 text-xs font-semibold rounded transition-colors ml-1"
                            >
                               View Invoice →
@@ -477,7 +477,7 @@ export default function QuotationsClient({ initialQuotations }: any) {
                     </button>
                     {q.status === 'accepted' ? (
                        <Link 
-                          href={q.invoice_id ? `/dashboard/invoices/${q.invoice_id}` : `/dashboard/invoices`} 
+                          href={`/dashboard/invoices`} 
                           className="px-3 py-1.5 bg-green-100 text-green-700 hover:bg-green-200 text-sm font-semibold rounded-lg transition-colors ml-1"
                        >
                           View Invoice

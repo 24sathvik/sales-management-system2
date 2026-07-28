@@ -158,10 +158,10 @@ export default function ViewQuotationPage({ params }: { params: { id: string } }
 
           {quotation.status === 'accepted' && quotation.invoices?.invoice_number && (
              <button 
-               onClick={() => router.push(`/dashboard/invoices/${quotation.invoice_id}`)}
+               onClick={() => router.push(`/dashboard/invoices`)}
                className="flex items-center gap-2 px-4 py-2 bg-primary text-white hover:bg-primary-dark rounded-lg text-sm font-semibold transition-colors"
              >
-               View Invoice <Play className="w-3.5 h-3.5" />
+               View Invoices <Play className="w-3.5 h-3.5" />
              </button>
           )}
         </div>
