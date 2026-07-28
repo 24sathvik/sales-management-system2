@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import Fuse from "fuse.js";
 import { faqData } from "@/lib/help/faq";
