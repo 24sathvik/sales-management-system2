@@ -1,7 +1,7 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
 import DashboardClient from "./DashboardClient";
-import { getDashboardStats } from "@/lib/queries/dashboardStats";
+import { fetchDashboardStatsAction } from "@/lib/actions/dashboard-actions";
 import { prisma } from "@/lib/prisma";
 
 export default async function DashboardPage() {
@@ -15,7 +15,7 @@ export default async function DashboardPage() {
   const defaultEnd = new Date(now.getFullYear(), now.getMonth() + 1, 0).toISOString().split('T')[0];
   
   // 1. Fetch initial stats
-  const initialStats = await getDashboardStats(defaultStart, defaultEnd, session.user.id, session.user.role);
+  const initialStats = await fetchDashboardStatsAction(defaultStart, defaultEnd);
 
   // 2. Fetch initial recent quotations (was previously using Supabase client in Dashboard)
   const baseWhere = session.user.role !== "ADMIN" ? { createdBy: session.user.id, deletedAt: null } : { deletedAt: null };
