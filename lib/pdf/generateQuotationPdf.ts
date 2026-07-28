@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 export async function generateQuotationPdf(data: any) {
   const { default: jsPDF } = await import("jspdf");
   const { default: autoTable } = await import("jspdf-autotable");
@@ -125,13 +125,13 @@ export async function generateQuotationPdf(data: any) {
   const discountAmt = Number(data.discount_amount) || 0;
   if (discountAmt > 0) {
     drawText("Discount:", totalsX, currentY, 9, "bold", [50, 50, 50]);
-    drawText(-, valuesX, currentY, 9, "normal", [80, 80, 80], "right");
+    drawText("-" + discountAmt.toFixed(2), valuesX, currentY, 9, "normal", [80, 80, 80], "right");
     currentY += 6;
   }
 
   const taxAmt = Number(data.tax_amount) || 0;
   if (taxAmt > 0) {
-    drawText(Tax (%):, totalsX, currentY, 9, "bold", [50, 50, 50]);
+    drawText("Tax (%):", totalsX, currentY, 9, "bold", [50, 50, 50]);
     drawText(taxAmt.toFixed(2), valuesX, currentY, 9, "normal", [80, 80, 80], "right");
     currentY += 6;
   }

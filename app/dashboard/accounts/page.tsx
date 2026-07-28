@@ -120,7 +120,9 @@ export default function AccountsPage() {
         <>
           {/* 1. Counter Balance Hero */}
           <div className="tour-a-hero">
-            <div data-tour="acc-balance"><CounterBalanceHero balance={summary?.counterBalance} receivables={summary?.receivables} />
+            <div data-tour="acc-balance">
+              <CounterBalanceHero balance={summary?.counterBalance} receivables={summary?.receivables} />
+            </div>
           </div>
 
           {/* 2. Month Selector */}

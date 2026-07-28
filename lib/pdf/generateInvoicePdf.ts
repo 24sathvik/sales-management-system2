@@ -1,4 +1,4 @@
-﻿/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
+/* eslint-disable @typescript-eslint/no-explicit-any, @typescript-eslint/no-unused-vars */
 export async function generateInvoicePdf(data: any) {
   const { default: jsPDF } = await import("jspdf");
   const { default: autoTable } = await import("jspdf-autotable");
@@ -119,14 +119,14 @@ export async function generateInvoicePdf(data: any) {
   if (discountAmt > 0) {
     drawText("Discount:", totalsX, currentY, 9, "bold", [50, 50, 50]);
     const discountVal = custom.discountType === "PERCENTAGE" ? (subtotal * discountAmt / 100) : discountAmt;
-    drawText(-, valuesX, currentY, 9, "normal", [80, 80, 80], "right");
+    drawText("-" + discountVal.toFixed(2), valuesX, currentY, 9, "normal", [80, 80, 80], "right");
     subtotal -= discountVal;
     currentY += 6;
   }
 
   const taxAmt = (subtotal * (Number(custom.gstPercent) || 0)) / 100;
   if (taxAmt > 0) {
-    drawText(Tax (%):, totalsX, currentY, 9, "bold", [50, 50, 50]);
+    drawText("Tax (%):", totalsX, currentY, 9, "bold", [50, 50, 50]);
     drawText(taxAmt.toFixed(2), valuesX, currentY, 9, "normal", [80, 80, 80], "right");
     currentY += 6;
   }
@@ -143,7 +143,7 @@ export async function generateInvoicePdf(data: any) {
   if (advancePaid > 0) {
     currentY += 8;
     drawText("Advance Paid:", totalsX, currentY, 9, "bold", [50, 50, 50]);
-    drawText(-, valuesX, currentY, 9, "normal", [34, 197, 94], "right");
+    drawText("-" + advancePaid.toFixed(2), valuesX, currentY, 9, "normal", [34, 197, 94], "right");
     
     currentY += 6;
     drawText("BALANCE DUE:", totalsX, currentY, 10, "bold", [33, 37, 41]);
