@@ -64,11 +64,13 @@ export default function DashboardClient({ initialStats, initialQuotations, initi
 
   // Fetch quotations separately from Supabase
   const { data: quotationsData } = useQuery({
-    queryKey: ["dashboard-quotations", session?.user?.id],
+    queryKey: ["dashboard-quotations", dateRange.startDate, dateRange.endDate, session?.user?.id],
     queryFn: async () => {
       let query = supabase
         .from("quotations")
         .select("*")
+        .gte("created_at", dateRange.startDate)
+        .lte("created_at", dateRange.endDate + "T23:59:59.999Z")
         .order("created_at", { ascending: false })
         .limit(5);
         
@@ -85,13 +87,13 @@ export default function DashboardClient({ initialStats, initialQuotations, initi
   });
 
   const { data: quotationStats } = useQuery({
-    queryKey: ["dashboard-quotation-stats", currentMonth, session?.user?.id],
+    queryKey: ["dashboard-quotation-stats", dateRange.startDate, dateRange.endDate, session?.user?.id],
     queryFn: async () => {
-      const startOfMonth = `${currentMonth}-01`;
       let query = supabase
         .from("quotations")
         .select("status, created_at")
-        .gte("created_at", startOfMonth);
+        .gte("created_at", dateRange.startDate)
+        .lte("created_at", dateRange.endDate + "T23:59:59.999Z");
 
       if (session?.user?.role !== "ADMIN" && session?.user?.id) {
         query = query.eq("created_by", session.user.id);

@@ -288,7 +288,8 @@ export async function POST(req: Request) {
           modelNumber: data.modelNumber || "",
           designer: data.designer || null,
           printer: data.printer || null,
-          isComplete: false
+          isComplete: false,
+          updatedAt: new Date()
         }
       });
 

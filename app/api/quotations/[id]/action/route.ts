@@ -190,7 +190,8 @@ export async function POST(req: Request, { params }: { params: { id: string } })
           modelNumber: quotation.quotationNumber || "",
           designer: null,
           printer: null,
-          isComplete: false
+          isComplete: false,
+          updatedAt: new Date()
         }
       });
 
