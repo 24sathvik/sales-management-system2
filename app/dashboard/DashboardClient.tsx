@@ -35,6 +35,7 @@ import { RefreshButton } from "@/components/dashboard/RefreshButton";
 import { Download } from "lucide-react";
 import { DashboardFilter, DateRange } from "@/components/dashboard/DashboardFilter";
 import { PageTour } from "@/components/onboarding/PageTour";
+import { fetchDashboardStatsAction } from "@/lib/actions/dashboard-actions";
 
 export default function DashboardClient({ initialStats, initialQuotations, initialQuotationStats }: any) {
   const { data: session } = useSession();
@@ -52,10 +53,7 @@ export default function DashboardClient({ initialStats, initialQuotations, initi
   const { data, isLoading, isError, refetch, isFetching } = useQuery({
     queryKey: ["dashboard-stats", dateRange.startDate, dateRange.endDate],
     queryFn: async () => {
-      const res = await fetch(`/api/dashboard/stats?startDate=${dateRange.startDate}&endDate=${dateRange.endDate}`);
-      if (!res.ok) throw new Error("Failed to load dashboard");
-      const json = await res.json();
-      return json.success ? json.data : json;
+      return await fetchDashboardStatsAction(dateRange.startDate, dateRange.endDate);
     },
     initialData: (dateRange.startDate === defaultStart && dateRange.endDate === defaultEnd) ? initialStats : undefined,
     staleTime: 30 * 1000,
