@@ -1,0 +1,518 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                  String               @id @default(uuid())
+  name                String
+  email               String               @unique
+  password            String
+  role                Role                 @default(USER)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  counterTransactions CounterTransaction[]
+  assignedInvoices    Invoice[]            @relation("AssignedTo")
+  createdInvoices     Invoice[]            @relation("CreatedBy")
+  assignedLeads       Lead[]               @relation("LeadAssignedTo")
+  createdLeads        Lead[]               @relation("LeadCreatedBy")
+  Quotation           Quotation[]
+  hasSeenOnboarding   Boolean              @default(false)
+}
+
+model Invoice {
+  id                  String               @id @default(uuid())
+  invoiceNumber       Int                  @unique @default(autoincrement())
+  customerName        String
+  phone               String
+  brideName           String
+  groomName           String
+  modelNumber         String
+  category            String               @default("Uncategorized")
+  description         String
+  date                DateTime             @default(now())
+  quantity            Int
+  toleranceQuantity   Int
+  unitRate            Decimal
+  totalAmount         Decimal
+  advancePaid         Boolean              @default(false)
+  advanceAmount       Decimal?
+  advanceMode         AdvanceMode?
+  balance             Decimal?
+  balancePaid         Boolean              @default(false)
+  balanceMode         BalanceMode?
+  estimatedDesignTime String
+  estimatedPrintTime  String
+  packing             PackingType
+  printingColor       String?
+  designer            String?
+  printer             String?
+  additionalNotes     String?
+  contentConfirmedOn  DateTime?
+  finalDeliveryDate   DateTime?
+  assigneeId          String
+  status              InvoiceStatus        @default(ACTIVE)
+  deletedAt           DateTime?
+  createdById         String
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  counterTransaction  CounterTransaction[]
+  finalCheck          FinalCheck?
+  assignee            User                 @relation("AssignedTo", fields: [assigneeId], references: [id])
+  createdBy           User                 @relation("CreatedBy", fields: [createdById], references: [id])
+  purchases           Purchase?
+  wipCards            WIPCard[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([finalDeliveryDate])
+  @@index([category])
+  @@index([assigneeId])
+  @@index([deletedAt])
+}
+
+model Lead {
+  id                 String     @id @default(uuid())
+  customerName       String
+  phone              String
+  category           String
+  description        String
+  quantity           Int
+  assignedToId       String
+  estimatedBillValue Decimal
+  status             LeadStatus @default(NEW)
+  notes              String?
+  deletedAt          DateTime?
+  createdById        String
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  assignedTo         User       @relation("LeadAssignedTo", fields: [assignedToId], references: [id])
+  createdBy          User       @relation("LeadCreatedBy", fields: [createdById], references: [id])
+
+  @@index([assignedToId])
+  @@index([status])
+  @@index([deletedAt])
+  @@index([createdAt])
+}
+
+model WIPCard {
+  id            String         @id @default(uuid())
+  invoiceId     String
+  invoiceNumber String
+  description   String
+  quantity      Int
+  customerName  String
+  stageId       String?
+  stage         WorkflowStage? @relation(fields: [stageId], references: [id])
+  order         Int            @default(0)
+  version       Int            @default(0)
+  deletedAt          DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime            @updatedAt
+  invoice            Invoice             @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  checklists         WIPChecklist[]
+  checklistResponses ChecklistResponse[] @relation("WipResponses")
+
+  @@index([stageId])
+  @@index([deletedAt])
+  @@index([order])
+}
+
+model WorkflowStage {
+  id                String             @id @default(cuid())
+  name              String
+  order             Int
+  color             String             @default("#C77D2E")
+  icon              String?
+  isActive          Boolean            @default(true)
+  wipCards          WIPCard[]
+  checklistTemplate ChecklistTemplate?
+}
+
+model FinalCheck {
+  id            String    @id @default(uuid())
+  invoiceId     String    @unique
+  invoiceNumber String
+  description   String
+  designer      String?
+  printer       String?
+  quantity      Int
+  modelNumber   String
+  isComplete    Boolean   @default(false)
+  completedAt        DateTime?
+  deletedAt          DateTime?
+  createdAt          DateTime            @default(now())
+  updatedAt          DateTime
+  invoice            Invoice             @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  checklistResponses ChecklistResponse[] @relation("FinalCheckResponses")
+
+  @@index([deletedAt])
+  @@index([isComplete])
+  @@index([completedAt])
+}
+
+model WIPChecklist {
+  id                           String    @id @default(uuid())
+  wipCardId                    String
+  stageId                      String?
+  invoiceId                    String
+  rm_billNumberVerified        Boolean   @default(false)
+  rm_modelNumberVerified       Boolean   @default(false)
+  rm_descriptionVerified       Boolean   @default(false)
+  rm_quantityVerified          Boolean   @default(false)
+  rm_printerAssigned           Boolean   @default(false)
+  rm_dtpAssigned               Boolean   @default(false)
+  rm_colourExplainedToCustomer Boolean   @default(false)
+  rm_leadTimeExplained         Boolean   @default(false)
+  rm_wastageRemarksAdjusted    Boolean   @default(false)
+  rm_dtpAssignedAndStarted     Boolean   @default(false)
+  d_materialCardsReceived      Boolean   @default(false)
+  d_dtpConfirmed               Boolean   @default(false)
+  d_cardsStockUpdated          Boolean   @default(false)
+  d_currentStockChecked        Boolean   @default(false)
+  d_stickersQualityChecked     Boolean   @default(false)
+  d_stickerQualityUpdated      Boolean   @default(false)
+  d_logoCheckedOnDtp           Boolean   @default(false)
+  d_printerScheduleInformed    Boolean   @default(false)
+  d_dtpSentToCustomer          Boolean   @default(false)
+  p_namePlatesReceived1        Boolean   @default(false)
+  p_namePlatesQualityChecked   Boolean   @default(false)
+  p_dtpConfirmedByCustomer     Boolean   @default(false)
+  p_namePlatesReceivedFinal    Boolean   @default(false)
+  p_signaturesFromCustomer     Boolean   @default(false)
+  p_leadTimeUpdated            Boolean   @default(false)
+  p_leftRightExplained         Boolean   @default(false)
+  p_masterTracingsReady        Boolean   @default(false)
+  p_samplesCollectedFromDtp    Boolean   @default(false)
+  p_masterCheckWithPdfCard     Boolean   @default(false)
+  p_timeColourWrittenOnCards   Boolean   @default(false)
+  p_timeColourSentInGroup      Boolean   @default(false)
+  p_cardOrientationSentToGroup Boolean   @default(false)
+  p_materialSentToPrinter      Boolean   @default(false)
+  p_estimatedPrintingDateSet   Boolean   @default(false)
+  p_printerFollowUp            Boolean   @default(false)
+  p_cardOrientationConfirmed   Boolean   @default(false)
+  pp_paddingBoxingScheduled    Boolean   @default(false)
+  pp_printedMaterialReceived   Boolean   @default(false)
+  pp_printedMaterialQC         Boolean   @default(false)
+  pp_cardsToBinder             Boolean   @default(false)
+  pp_binderFollowUp            Boolean   @default(false)
+  pp_estimatedTimeToBinder     Boolean   @default(false)
+  pp_endProductCheck           Boolean   @default(false)
+  pp_sampleExchanged           Boolean   @default(false)
+  pp_customerInformedBag       Boolean   @default(false)
+  pp_customerInformedReadiness Boolean   @default(false)
+  pp_paymentCollected          Boolean   @default(false)
+  pp_reminderFollowUp          Boolean   @default(false)
+  pp_ratingTaken               Boolean   @default(false)
+  pp_checkRatingName           Boolean   @default(false)
+  pp_balanceCollected          Boolean   @default(false)
+  pay_invoiceAmountConfirmed   Boolean   @default(false)
+  pay_paymentReminderSent      Boolean   @default(false)
+  pay_partialPaymentReceived   Boolean   @default(false)
+  pay_fullPaymentReceived      Boolean   @default(false)
+  pay_receiptIssued            Boolean   @default(false)
+  isComplete                   Boolean   @default(false)
+  completedAt                  DateTime?
+  createdAt                    DateTime  @default(now())
+  updatedAt                    DateTime  @updatedAt
+  wipCard                      WIPCard   @relation(fields: [wipCardId], references: [id], onDelete: Cascade)
+
+  @@index([wipCardId])
+  @@index([invoiceId])
+  @@index([stageId])
+}
+
+model Purchase {
+  id                        String        @id @default(uuid())
+  invoiceId                 String        @unique
+  invoiceNumber             String
+  customerName              String
+  description               String
+  category                  String
+  quantity                  Int
+  billValue                 Decimal
+  leadSource                String?
+  designer1Name             String?
+  designer1Cost             Decimal?      @default(0)
+  designer1PaymentStatus    PaymentStatus @default(PENDING)
+  designer1PaymentMode      PaymentMode?
+  designer2Name             String?
+  designer2Cost             Decimal?      @default(0)
+  designer2PaymentStatus    PaymentStatus @default(PENDING)
+  designer2PaymentMode      PaymentMode?
+  printer1Name              String?
+  printer1Cost              Decimal?      @default(0)
+  printer1PaymentStatus     PaymentStatus @default(PENDING)
+  printer1PaymentMode       PaymentMode?
+  printer2Name              String?
+  printer2Cost              Decimal?      @default(0)
+  printer2PaymentStatus     PaymentStatus @default(PENDING)
+  printer2PaymentMode       PaymentMode?
+  rawMaterial1Name          String?
+  rawMaterial1Cost          Decimal?      @default(0)
+  rawMaterial1PaymentStatus PaymentStatus @default(PENDING)
+  rawMaterial1PaymentMode   PaymentMode?
+  rawMaterial2Name          String?
+  rawMaterial2Cost          Decimal?      @default(0)
+  rawMaterial2PaymentStatus PaymentStatus @default(PENDING)
+  rawMaterial2PaymentMode   PaymentMode?
+  postProcess1Name          String?
+  postProcess1Cost          Decimal?      @default(0)
+  postProcess1PaymentStatus PaymentStatus @default(PENDING)
+  postProcess1PaymentMode   PaymentMode?
+  postProcess2Name          String?
+  postProcess2Cost          Decimal?      @default(0)
+  postProcess2PaymentStatus PaymentStatus @default(PENDING)
+  postProcess2PaymentMode   PaymentMode?
+  totalDesignerCost         Decimal       @default(0)
+  totalPrinterCost          Decimal       @default(0)
+  totalRawMaterialCost      Decimal       @default(0)
+  totalPostProcessCost      Decimal       @default(0)
+  totalProductionCost       Decimal       @default(0)
+  profit                    Decimal       @default(0)
+  profitPercentage          Decimal       @default(0)
+  notes                     String?
+  deletedAt                 DateTime?
+  completedAt               DateTime
+  createdAt                 DateTime      @default(now())
+  updatedAt                 DateTime      @updatedAt
+  invoice                   Invoice       @relation(fields: [invoiceId], references: [id])
+
+  @@index([completedAt])
+  @@index([category])
+  @@index([invoiceId])
+  @@index([deletedAt])
+  @@index([leadSource])
+}
+
+model MonthlyExpense {
+  id          String          @id @default(uuid())
+  month       Int
+  year        Int
+  category    ExpenseCategory
+  amount      Decimal
+  description String?
+  paidOn      DateTime?
+  paymentMode PaymentMode?
+  createdBy   String
+  deletedAt   DateTime?
+  createdAt   DateTime        @default(now())
+  updatedAt   DateTime        @updatedAt
+
+  @@index([year, month])
+  @@index([category])
+  @@index([deletedAt])
+}
+
+model CounterTransaction {
+  id             String              @id @default(uuid())
+  date           DateTime            @default(now())
+  type           TransactionType
+  mode           PaymentMode
+  amount         Decimal
+  description    String
+  invoiceId      String?
+  invoiceNumber  String?
+  category       TransactionCategory
+  runningBalance Decimal
+  createdBy      String
+  deletedAt      DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  user           User                @relation(fields: [createdBy], references: [id])
+  invoice        Invoice?            @relation(fields: [invoiceId], references: [id])
+
+  @@index([date])
+  @@index([mode])
+  @@index([type])
+  @@index([category])
+  @@index([deletedAt])
+  @@index([createdAt])
+}
+
+model InvoiceCategory {
+  id        String   @id @default(uuid())
+  name      String   @unique
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum AdvanceMode {
+  ONLINE
+  CASH
+}
+
+enum BalanceMode {
+  ONLINE
+  CASH
+}
+
+enum PackingType {
+  WITH_PACKING
+  WITHOUT_PACKING
+}
+
+enum InvoiceStatus {
+  ACTIVE
+  CLOSED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  NEGOTIATING
+  CONVERTED
+  LOST
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  PARTIAL
+}
+
+enum PaymentMode {
+  ONLINE
+  CASH
+  UPI
+  BANK_TRANSFER
+}
+
+enum ExpenseCategory {
+  RENT
+  SALARY
+  ELECTRICITY
+  FUEL
+  INTERNET
+  MISC
+  OTHER
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+enum TransactionCategory {
+  INVOICE_ADVANCE
+  INVOICE_BALANCE
+  INVOICE_FULL_PAYMENT
+  VENDOR_PAYMENT
+  OVERHEAD
+  MISC_INCOME
+  MISC_EXPENSE
+}
+
+enum QuotationStatus {
+  draft
+  sent
+  accepted
+  rejected
+
+  @@map("quotation_status")
+}
+
+model Quotation {
+  id              String          @id @default(dbgenerated("gen_random_uuid()"))
+  quotationNumber String          @unique @map("quotation_number")
+  customerName    String          @map("customer_name")
+  customerEmail   String?         @map("customer_email")
+  customerPhone   String?         @map("customer_phone")
+  customerAddress String?         @map("customer_address")
+  items           Json            @default("[]")
+  subtotal        Decimal         @default(0) @db.Decimal(12, 2)
+  discountType    String?         @default("PERCENTAGE") @map("discount_type")
+  discountPercent Decimal?        @default(0) @map("discount_percent") @db.Decimal(5, 2)
+  discountAmount  Decimal?        @default(0) @map("discount_amount") @db.Decimal(12, 2)
+  gstPercent      Decimal?        @default(0) @map("gst_percent") @db.Decimal(5, 2)
+  taxAmount       Decimal?        @default(0) @map("tax_amount") @db.Decimal(12, 2)
+  totalAmount     Decimal         @default(0) @map("total_amount") @db.Decimal(12, 2)
+  notes           String?
+  validUntil      DateTime?       @map("valid_until") @db.Date
+  status          QuotationStatus @default(draft)
+
+  createdBy String? @map("created_by")
+  creator   User?   @relation(fields: [createdBy], references: [id])
+  invoiceId String? @map("invoice_id")
+
+  createdAt DateTime? @default(now()) @map("created_at") @db.Timestamptz()
+  updatedAt DateTime? @default(now()) @updatedAt @map("updated_at") @db.Timestamptz()
+  deletedAt DateTime? @map("deleted_at") @db.Timestamptz()
+
+  companyName        String?   @map("company_name")
+  jobTitle           String?   @map("job_title")
+  category           String?
+  printingColor      String?   @map("printing_color")
+  paperSize          String?   @map("paper_size")
+  paperType          String?   @map("paper_type")
+  finishType         String?   @map("finish_type")
+  printingSides      String?   @map("printing_sides")
+  deliveryDate       DateTime? @map("delivery_date") @db.Date
+  advanceRequired    Decimal?  @default(0) @map("advance_required") @db.Decimal(12, 2)
+  paymentTerms       String?   @map("payment_terms")
+  customPaymentTerms String?   @map("custom_payment_terms")
+
+  @@index([status])
+  @@map("quotations")
+}
+
+model RateLimit {
+  key         String   @id
+  count       Int      @default(1)
+  windowStart DateTime @default(now())
+}
+
+model SystemSettings {
+  id                 String   @id @default("default")
+  enableGamification Boolean  @default(true)
+  updatedAt          DateTime @updatedAt
+}
+
+model ChecklistTemplate {
+  id        String          @id @default(uuid())
+  stageId   String?         @unique
+  stage     WorkflowStage?  @relation(fields: [stageId], references: [id])
+  name      String
+  items     ChecklistItem[]
+  isActive  Boolean         @default(true)
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+}
+
+model ChecklistItem {
+  id         String              @id @default(uuid())
+  templateId String
+  template   ChecklistTemplate   @relation(fields: [templateId], references: [id], onDelete: Cascade)
+  label      String
+  key        String?             // Added for mapping legacy keys
+  order      Int
+  isRequired Boolean             @default(true)
+  responses  ChecklistResponse[]
+}
+
+model ChecklistResponse {
+  id           String         @id @default(uuid())
+  wipCardId    String?
+  wipCard      WIPCard?       @relation("WipResponses", fields: [wipCardId], references: [id], onDelete: Cascade)
+  finalCheckId String?
+  finalCheck   FinalCheck?    @relation("FinalCheckResponses", fields: [finalCheckId], references: [id], onDelete: Cascade)
+  itemId       String
+  item         ChecklistItem  @relation(fields: [itemId], references: [id], onDelete: Cascade)
+  isChecked    Boolean        @default(false)
+  checkedAt    DateTime?
+  checkedBy    String?
+
+  @@index([wipCardId])
+  @@index([finalCheckId])
+  @@index([itemId])
+}

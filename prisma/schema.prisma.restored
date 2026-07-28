@@ -1,0 +1,404 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id                  String               @id @default(uuid())
+  name                String
+  email               String               @unique
+  password            String
+  role                Role                 @default(USER)
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  counterTransactions CounterTransaction[]
+  assignedInvoices    Invoice[]            @relation("AssignedTo")
+  createdInvoices     Invoice[]            @relation("CreatedBy")
+  assignedLeads       Lead[]               @relation("LeadAssignedTo")
+  createdLeads        Lead[]               @relation("LeadCreatedBy")
+}
+
+model Invoice {
+  id                  String               @id @default(uuid())
+  invoiceNumber       Int                  @unique @default(autoincrement())
+  customerName        String
+  phone               String
+  brideName           String
+  groomName           String
+  modelNumber         String
+  category            String               @default("Uncategorized")
+  description         String
+  date                DateTime             @default(now())
+  quantity            Int
+  toleranceQuantity   Int
+  unitRate            Decimal
+  totalAmount         Decimal
+  advancePaid         Boolean              @default(false)
+  advanceAmount       Decimal?
+  advanceMode         AdvanceMode?
+  balance             Decimal?
+  balancePaid         Boolean              @default(false)
+  balanceMode         BalanceMode?
+  estimatedDesignTime String
+  estimatedPrintTime  String
+  packing             PackingType
+  printingColor       String?
+  designer            String?
+  printer             String?
+  additionalNotes     String?
+  contentConfirmedOn  DateTime?
+  finalDeliveryDate   DateTime?
+  assigneeId          String
+  status              InvoiceStatus        @default(ACTIVE)
+  deletedAt           DateTime?
+  createdById         String
+  createdAt           DateTime             @default(now())
+  updatedAt           DateTime             @updatedAt
+  counterTransaction  CounterTransaction[]
+  finalCheck          FinalCheck?
+  assignee            User                 @relation("AssignedTo", fields: [assigneeId], references: [id])
+  createdBy           User                 @relation("CreatedBy", fields: [createdById], references: [id])
+  purchases           Purchase?
+  wipCards            WIPCard[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@index([finalDeliveryDate])
+  @@index([category])
+  @@index([assigneeId])
+  @@index([deletedAt])
+}
+
+model Lead {
+  id                 String     @id @default(uuid())
+  customerName       String
+  phone              String
+  category           String
+  description        String
+  quantity           Int
+  assignedToId       String
+  estimatedBillValue Decimal
+  status             LeadStatus @default(NEW)
+  notes              String?
+  deletedAt          DateTime?
+  createdById        String
+  createdAt          DateTime   @default(now())
+  updatedAt          DateTime   @updatedAt
+  assignedTo         User       @relation("LeadAssignedTo", fields: [assignedToId], references: [id])
+  createdBy          User       @relation("LeadCreatedBy", fields: [createdById], references: [id])
+
+  @@index([assignedToId])
+  @@index([status])
+  @@index([deletedAt])
+}
+
+model WIPCard {
+
+
+  assignedLeads    Lead[]    @relation("LeadAssignedTo")
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  description    String
+  invoiceId      String?
+  invoiceNumber  String?
+  category       TransactionCategory
+  runningBalance Decimal
+  createdBy      String
+  deletedAt      DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+  user           User                @relation(fields: [createdBy], references: [id])
+  invoice        Invoice?            @relation(fields: [invoiceId], references: [id])
+
+  @@index([date])
+  @@index([mode])
+  @@index([type])
+  @@index([category])
+  @@index([deletedAt])
+  @@index([createdAt])
+}
+
+model InvoiceCategory {
+  id        String   @id
+  name      String   @unique
+  createdAt DateTime @default(now())
+}
+
+enum Role {
+  ADMIN
+  USER
+}
+
+enum AdvanceMode {
+  ONLINE
+  CASH
+}
+
+enum BalanceMode {
+  ONLINE
+  CASH
+}
+
+enum PackingType {
+  WITH_PACKING
+  WITHOUT_PACKING
+}
+
+enum InvoiceStatus {
+  ACTIVE
+  CLOSED
+}
+
+enum LeadStatus {
+  NEW
+  CONTACTED
+  NEGOTIATING
+  CONVERTED
+  LOST
+}
+
+enum WIPPhase {
+  RAW_MATERIALS
+  DESIGN
+  PRINTING
+  POST_PRINTING
+  PAYMENT_PENDING
+}
+
+enum PaymentStatus {
+  PENDING
+  PAID
+  PARTIAL
+}
+
+enum PaymentMode {
+  ONLINE
+  CASH
+  UPI
+  BANK_TRANSFER
+}
+
+enum ExpenseCategory {
+  RENT
+  SALARY
+  ELECTRICITY
+  FUEL
+  INTERNET
+  MISC
+  OTHER
+}
+
+enum TransactionType {
+  CREDIT
+  DEBIT
+}
+
+enum TransactionCategory {
+  INVOICE_ADVANCE
+  INVOICE_BALANCE
+  INVOICE_FULL_PAYMENT
+  VENDOR_PAYMENT
+  OVERHEAD
+  MISC_INCOME
+  MISC_EXPENSE
+}
+
