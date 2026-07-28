@@ -11,7 +11,6 @@ import { toast } from "sonner";
 import { Loader2, Save, Plus, Trash2, ArrowRight, ArrowLeft, Calendar, Send } from "lucide-react";
 import { quotationSchema } from "@/lib/validations";
 import { GST_RATES } from "@/lib/constants/gst";
-import { PageTour } from "@/components/onboarding/PageTour";
 import dynamic from "next/dynamic";
 
 const PDFDownloadButton = dynamic(
@@ -300,45 +299,7 @@ export function QuotationForm({ initialData, quotationId }: {
   // --- EDITING MODE ---
   return (
     <div className="w-full max-w-6xl mx-auto animate-in fade-in duration-300 pb-32 lg:pb-12 tour-quotation">
-      <PageTour 
-        tourId="quotation_create"
-        steps={[
-          {
-            element: '.tour-quotation',
-            popover: {
-              title: 'The Flagship Automation',
-              description: 'Creating a Quotation is the core engine of ZyOps. When a client accepts this quote, ZyOps will automatically convert it into an active Invoice and push it to the live Work-in-Progress board—zero manual data re-entry required.',
-              side: "bottom",
-              align: 'start'
-            }
-          },
-          {
-            element: '.tour-q-header',
-            popover: {
-              title: '1. Lead & Customer Info',
-              description: 'Log basic client details. The "Lead Source" field helps track marketing performance, but remains strictly internal (clients will never see it on their PDF).',
-              side: "bottom"
-            }
-          },
-          {
-            element: '.tour-q-scope',
-            popover: {
-              title: '2. Estimated Scope',
-              description: 'Add your line items. You can press Enter on the last rate field to quickly append a new row. The subtotal recalculates instantly.',
-              side: "top"
-            }
-          },
-          {
-            element: '.tour-q-adjustments',
-            popover: {
-              title: '3. Adjustments & Taxes',
-              description: 'Apply flat or percentage discounts and set the GST bracket. The system handles all the math in real-time.',
-              side: "left"
-            }
-          }
-        ]}
-      />
-      <div className="flex items-center justify-between pb-6 border-b mb-6">
+            <div className="flex items-center justify-between pb-6 border-b mb-6">
         <div>
           <h2 className="text-3xl font-display font-bold text-slate-800">
             {quotationId ? "Edit Quotation" : "New Quotation"}

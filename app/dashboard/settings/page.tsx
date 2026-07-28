@@ -53,7 +53,7 @@ export default function SystemSettingsPage() {
   }
 
   return (
-    <div className="p-8 max-w-4xl mx-auto">
+    <div className="p-8 max-w-4xl mx-auto" data-tour="set-intro">
       <div className="mb-8">
         <h1 className="text-3xl font-bold text-[var(--text-heading)] tracking-tight mb-2">System Settings</h1>
         <p className="text-[var(--text-secondary)]">Manage global configuration options for your workspace.</p>

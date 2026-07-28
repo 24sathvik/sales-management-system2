@@ -12,7 +12,7 @@ import { AdvancedFilterPanel } from "./AdvancedFilterPanel";
 import { ChevronUp, ChevronDown, FileText } from "lucide-react";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { useVirtualizer } from "@tanstack/react-virtual";
-import { PageTour } from "@/components/onboarding/PageTour";
+
 
 function DownloadAction({ invoice }: { invoice: any }) {
   const [loading, setLoading] = useState(false);
@@ -200,37 +200,8 @@ export function InvoiceTable({ currentUserRole, initialData }: { currentUserRole
   });
 
   return (
-    <div className="space-y-4 font-sans tour-invoices">
-      <PageTour 
-        tourId="invoices"
-        steps={[
-          {
-            element: '.tour-invoices',
-            popover: {
-              title: 'Invoice Management',
-              description: 'Invoices are either created directly or automatically inherited from accepted quotes. This is your master record for fulfillment, tracking, and billing.',
-              side: "bottom",
-              align: 'start'
-            }
-          },
-          {
-            element: '.tour-i-filters',
-            popover: {
-              title: 'Advanced Filtering',
-              description: 'Use these filters to find invoices by their active status, balance due, assigned staff, or date ranges.',
-              side: "bottom"
-            }
-          },
-          {
-            element: '.tour-i-legend',
-            popover: {
-              title: 'Priority Legend',
-              description: 'Rows are dynamically color-coded based on how close the order is to its final delivery date. Red means it\'s due within 48 hours or overdue.',
-              side: "left"
-            }
-          }
-        ]}
-      />
+    <div className="space-y-4 font-sans tour-invoices" data-tour="inv-list">
+      
       <div className="flex justify-end mb-2 tour-i-legend">
         <div className="flex gap-2 text-xs items-center bg-white p-2 rounded border shadow-sm font-medium">
           <span className="font-bold text-brand-black mr-2">Priority Legend:</span>

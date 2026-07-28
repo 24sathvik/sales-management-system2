@@ -34,7 +34,6 @@ import { RefreshButton } from "@/components/dashboard/RefreshButton";
 
 import { Download } from "lucide-react";
 import { DashboardFilter, DateRange } from "@/components/dashboard/DashboardFilter";
-import { PageTour } from "@/components/onboarding/PageTour";
 import { fetchDashboardStatsAction } from "@/lib/actions/dashboard-actions";
 
 export default function DashboardClient({ initialStats, initialQuotations, initialQuotationStats }: any) {
@@ -116,45 +115,7 @@ export default function DashboardClient({ initialStats, initialQuotations, initi
 
   return (
     <div className="space-y-8 animate-in fade-in duration-150 tour-dashboard">
-      <PageTour 
-        tourId="dashboard"
-        steps={[
-          {
-            element: '.tour-dashboard',
-            popover: {
-              title: 'Welcome to your Dashboard',
-              description: 'This is your operational command center. Let’s take a quick look at what everything means.',
-              side: "bottom",
-              align: 'start'
-            }
-          },
-          {
-            element: '.stat-urgent',
-            popover: {
-              title: 'Urgent Deliveries',
-              description: 'Orders that must be delivered in the next 7 days based on their final delivery date. This keeps your team focused on immediate priorities.',
-              side: "bottom"
-            }
-          },
-          {
-            element: '.stat-overdue',
-            popover: {
-              title: 'Overdue Invoices',
-              description: 'Invoices that have passed their expected delivery date but are still marked ACTIVE. These require immediate attention to avoid client dissatisfaction.',
-              side: "bottom"
-            }
-          },
-          {
-            element: '.wip-summary',
-            popover: {
-              title: 'WIP Pipeline Summary',
-              description: 'A live snapshot of exactly how many orders are sitting in each stage of your production pipeline right now.',
-              side: "left"
-            }
-          }
-        ]}
-      />
-      {/* Page Header */}
+            {/* Page Header */}
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-primary">Dashboard</h1>
@@ -162,7 +123,7 @@ export default function DashboardClient({ initialStats, initialQuotations, initi
             ZyOps operational overview at a glance.
           </p>
         </div>
-        <div className="flex flex-col sm:flex-row items-center gap-3">
+        <div className="flex flex-col sm:flex-row items-center gap-3" data-tour="dash-controls">
           <DashboardFilter onFilterChange={setDateRange} />
           
           <div className="flex items-center gap-2">
@@ -221,7 +182,7 @@ export default function DashboardClient({ initialStats, initialQuotations, initi
       ) : (
         <>
           {/* 4 Stat Cards: 4 per row */}
-          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5">
+          <div className="grid grid-cols-1 sm:grid-cols-2 xl:grid-cols-4 gap-5" data-tour="dash-stats">
             <StatCard
               label="Total Invoices"
               value={data.stats.totalInvoices}
@@ -271,7 +232,7 @@ export default function DashboardClient({ initialStats, initialQuotations, initi
               <UrgentDeliveriesPanel deliveries={data.urgentDeliveries} />
             </div>
 
-            <div className="bg-white rounded-xl border shadow-sm p-6 wip-summary">
+            <div className="bg-white rounded-xl border shadow-sm p-6 wip-summary" data-tour="dash-wip">
               <div className="flex items-center justify-between mb-4">
                 <div>
                   <h2 className="text-base font-bold font-syne text-slate-800">WIP Pipeline</h2>
@@ -289,7 +250,7 @@ export default function DashboardClient({ initialStats, initialQuotations, initi
           </div>
 
           {/* Row: Recent Invoices + Recent Quotations + Final Check */}
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-3 gap-6" data-tour="dash-recent">
             {/* Recent Invoices */}
             <div className="lg:col-span-2 bg-white rounded-xl border shadow-sm p-6">
               <div className="flex items-center justify-between mb-4">
@@ -337,7 +298,7 @@ export default function DashboardClient({ initialStats, initialQuotations, initi
           {session?.user?.role === "ADMIN" && <AdminAnalytics />}
 
           {session?.user?.role === "ADMIN" && (
-            <div className="mt-8">
+            <div className="mt-8" data-tour="dash-insights">
               <InsightsPanel />
             </div>
           )}

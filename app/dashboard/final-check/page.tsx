@@ -35,7 +35,7 @@ export default function FinalCheckPage() {
   };
 
   return (
-    <div className="h-[calc(100vh-100px)] flex flex-col space-y-4">
+    <div className="h-[calc(100vh-100px)] flex flex-col space-y-4" data-tour="fc-intro">
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-3xl font-bold tracking-tight text-brand-forest">Final Check</h1>

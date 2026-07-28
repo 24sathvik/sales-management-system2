@@ -205,6 +205,7 @@ export default function QuotationsClient({ initialQuotations }: any) {
         <Link 
           href="/dashboard/quotations/new"
           className="btn btn-cta flex items-center gap-2 shrink-0"
+          data-tour="quo-new"
         >
           <Plus className="w-5 h-5 shrink-0" />
           <span>New Quotation</span>
@@ -242,7 +243,7 @@ export default function QuotationsClient({ initialQuotations }: any) {
       </div>
 
       {/* Table */}
-      <div className="bg-card border border-card-border rounded-xl shadow-sm overflow-hidden flex flex-col">
+      <div className="bg-card border border-card-border rounded-xl shadow-sm overflow-hidden flex flex-col" data-tour="quo-list">
         <div ref={tableContainerRef} className="overflow-auto max-h-[650px] min-h-[400px]">
           {/* Desktop Table */}
           <table className="w-full text-sm text-left hidden md:table">

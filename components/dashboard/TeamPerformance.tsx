@@ -67,7 +67,7 @@ export function TeamPerformance() {
   const firstName = session?.user?.name?.split(" ")[0] || "there";
 
   return (
-    <div className="mt-10 pt-8 border-t space-y-6">
+    <div className="mt-10 pt-8 border-t space-y-6" data-tour="dash-team">
       <div className="flex flex-col md:flex-row md:items-end justify-between gap-4">
         <div>
           <h2 className="text-2xl font-bold tracking-tight text-foreground flex items-center gap-2">

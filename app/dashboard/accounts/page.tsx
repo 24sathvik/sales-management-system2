@@ -15,7 +15,7 @@ import dynamic from "next/dynamic";
 const MonthlySalesChart = dynamic(() => import("@/components/accounts/MonthlySalesChart").then(mod => mod.MonthlySalesChart), { ssr: false });
 import { AccountsPageSkeleton } from "@/components/accounts/AccountsPageSkeleton";
 import { MetricExplanation } from "@/components/ui/MetricExplanation";
-import { PageTour } from "@/components/onboarding/PageTour";
+
 
 function fmt(n: number) {
   return new Intl.NumberFormat("en-IN", { style: "currency", currency: "INR", maximumFractionDigits: 2 }).format(n);
@@ -108,44 +108,7 @@ export default function AccountsPage() {
 
   return (
     <div className="flex flex-col gap-6 max-w-7xl mx-auto pb-10 tour-accounts">
-      <PageTour 
-        tourId="accounts"
-        steps={[
-          {
-            element: '.tour-accounts',
-            popover: {
-              title: 'Financial Command Center',
-              description: 'This page gives you a comprehensive view of your business cash flow, profits, and outstanding debts.',
-              side: "bottom",
-              align: 'start'
-            }
-          },
-          {
-            element: '.tour-a-hero',
-            popover: {
-              title: 'Balances at a Glance',
-              description: 'The Counter Balance represents your actual cash-in-hand (ledger transactions), whereas Total Receivables shows the total amount clients still owe you on active invoices.',
-              side: "bottom"
-            }
-          },
-          {
-            element: '.tour-a-expenses',
-            popover: {
-              title: 'Monthly Expenses',
-              description: 'Log your general overhead (like rent, utilities, or salaries) here. These are subtracted from your Gross Profit to calculate your true Net Profit for the month.',
-              side: "right"
-            }
-          },
-          {
-            element: '.tour-a-ledger',
-            popover: {
-              title: 'Transaction Ledger',
-              description: 'This is a running record of all money entering or leaving your business. Add manual credits or debits to keep your Counter Balance perfectly synced with reality.',
-              side: "top"
-            }
-          }
-        ]}
-      />
+      
       <div>
         <h1 className="text-3xl font-bold font-syne tracking-tight text-brand-forest">Financial Summary</h1>
         <p className="text-sm text-brand-muted mt-1">Command center for all financial operations</p>
@@ -157,7 +120,7 @@ export default function AccountsPage() {
         <>
           {/* 1. Counter Balance Hero */}
           <div className="tour-a-hero">
-            <CounterBalanceHero balance={summary?.counterBalance} receivables={summary?.receivables} />
+            <div data-tour="acc-balance"><CounterBalanceHero balance={summary?.counterBalance} receivables={summary?.receivables} />
           </div>
 
           {/* 2. Month Selector */}

@@ -174,7 +174,7 @@ export default function WorkflowSettingsPage() {
   if (isLoading) return <div className="p-8 flex justify-center"><Loader2 className="animate-spin w-8 h-8 text-brand-forest" /></div>;
 
   return (
-    <div className="p-8 max-w-6xl mx-auto">
+    <div className="p-8 max-w-6xl mx-auto" data-tour="wf-pipeline">
       <h1 className="text-3xl font-bold text-slate-800 tracking-tight mb-2">Workflow Settings</h1>
       <p className="text-slate-500 mb-8 max-w-2xl">Configure the pipeline stages and their required quality assurance checklists. These stages dictate the flow in your Kanban board.</p>
 

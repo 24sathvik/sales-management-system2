@@ -33,6 +33,7 @@ export default async function InvoicesPage() {
       <div className="flex justify-between items-center">
         <h1 className="text-3xl font-bold font-syne tracking-tight text-brand-forest">Invoices</h1>
         <Link 
+          data-tour="inv-new"
           href="/dashboard/invoices/new" 
           className="btn btn-cta shadow-md transition-all hover:opacity-90 active:scale-95"
         >

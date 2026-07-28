@@ -3,6 +3,7 @@
 import { X, Sparkles, Lightbulb, PlayCircle, HelpCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { changelogData } from "@/lib/changelog";
+import { useTourStore } from "@/lib/tour/tourStore";
 
 const QUICK_TIPS = [
   "Did you know you can search invoices by customer phone number?",
@@ -106,7 +107,7 @@ export function ResourcesModal({ isOpen, onClose }: { isOpen: boolean; onClose: 
                 <button
                   onClick={() => {
                     onClose();
-                    window.dispatchEvent(new Event("replay-onboarding"));
+                    useTourStore.getState().startTour();
                   }}
                   className="w-full flex items-center gap-3 p-4 rounded-xl border border-[var(--border-default)] hover:border-[var(--brand-primary)] hover:bg-[var(--bg-app)] transition-all group text-left"
                 >

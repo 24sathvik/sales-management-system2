@@ -149,14 +149,14 @@ export default function PurchasesPage() {
   }
 
   return (
-    <div className="flex flex-col gap-4 h-full">
+    <div className="flex flex-col gap-4 h-full" data-tour="pur-intro">
       <div>
         <h1 className="text-3xl font-bold tracking-tight text-brand-forest">Purchases</h1>
         <p className="text-sm text-brand-muted mt-1">Production cost tracking &amp; profit analysis</p>
       </div>
 
       {/* ── SUMMARY STAT CARDS ── */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+      <div className="grid grid-cols-2 md:grid-cols-4 gap-4" data-tour="pur-margin">
         {[
           { label: "Total Revenue", value: fmt(stats.totalRevenue), icon: <IndianRupee className="w-5 h-5" />, color: "brand-forest" },
           { label: "Total Production Cost", value: fmt(stats.totalCost), icon: <TrendingDown className="w-5 h-5" />, color: "brand-sage" },

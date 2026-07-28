@@ -1,11 +1,12 @@
 import { Sidebar } from "@/components/layout/Sidebar";
 import { Header } from "@/components/layout/Header";
 import { HelpWidget } from "@/components/help/HelpWidget";
-import { OnboardingProvider } from "@/components/onboarding/OnboardingProvider";
+import { TourController } from "@/components/onboarding/TourController";
 
 export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
-    <OnboardingProvider>
+    <>
+      <TourController />
       <div className="flex h-screen overflow-hidden bg-background">
         <div className="hidden md:flex shrink-0">
           <Sidebar />
@@ -18,6 +19,6 @@ export default function DashboardLayout({ children }: { children: React.ReactNod
         </div>
         <HelpWidget />
       </div>
-    </OnboardingProvider>
+    </>
   );
 }

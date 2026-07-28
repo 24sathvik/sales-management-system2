@@ -25,7 +25,7 @@ import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { EmptyState } from "@/components/ui/EmptyState";
 import { Layers, ChevronDown } from "lucide-react";
-import { PageTour } from "@/components/onboarding/PageTour";
+
 
 
 export function KanbanBoard({ 
@@ -364,36 +364,7 @@ export function KanbanBoard({
       onDragOver={handleDragOver}
       onDragEnd={handleDragEnd}
     >
-      <PageTour 
-        tourId="wip"
-        steps={[
-          {
-            element: '.tour-kanban-board',
-            popover: {
-              title: 'Work In Progress Board',
-              description: 'This is where every active order’s production status lives. As work gets done, you move cards from left to right.',
-              side: "bottom",
-              align: 'start'
-            }
-          },
-          {
-            element: '.tour-k-columns',
-            popover: {
-              title: 'Production Stages',
-              description: 'These columns represent your fulfillment process sequentially. Some stages have mandatory checklist items that must be completed before the card can advance.',
-              side: "bottom"
-            }
-          },
-          {
-            element: '.tour-k-cards',
-            popover: {
-              title: 'Interactive Cards',
-              description: 'Simply drag and drop these cards to move them between stages. Notice the color-coded left edge—red means the order is due within 48 hours or already overdue.',
-              side: "right"
-            }
-          }
-        ]}
-      />
+      
       {/* Mobile Phase Selector */}
       {!Object.values(columns).every(col => col.length === 0) && (
         <div className="md:hidden sticky top-0 z-30 bg-background pt-2 pb-3 mb-2 border-b border-border">
@@ -414,7 +385,7 @@ export function KanbanBoard({
         </div>
       )}
 
-      <div className="flex flex-col md:flex-row md:gap-6 overflow-x-auto pb-6 h-full min-h-[500px] snap-x pt-2 tour-kanban-board tour-k-columns tour-k-cards">
+      <div className="flex flex-col md:flex-row md:gap-6 overflow-x-auto pb-6 h-full min-h-[500px] snap-x pt-2 tour-kanban-board tour-k-columns tour-k-cards" data-tour="wip-board">
         {Object.values(columns).every(col => col.length === 0) ? (
           <div className="w-full h-full min-h-[400px] flex items-center justify-center p-8">
             <EmptyState 
