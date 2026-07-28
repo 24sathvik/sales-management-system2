@@ -155,5 +155,6 @@ export async function generateQuotationPdf(data: any) {
 
   drawText("Authorized Signatory", pageWidth - margin, termsY + 20, 9, "bold", [50, 50, 50], "right");
 
+  doc.save(`Quotation_${data.quotation_number || "Draft"}.pdf`);
   return doc;
 }

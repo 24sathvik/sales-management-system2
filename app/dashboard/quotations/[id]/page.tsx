@@ -57,9 +57,9 @@ export default function ViewQuotationPage({ params }: { params: { id: string } }
       const invoiceId = data.data?.invoice_id;
       toast.success(`✅ Quotation accepted & Invoice generated!`, {
         action: invoiceId ? {
-          label: "View Invoice →",
-          onClick: () => router.push(`/dashboard/invoices/${invoiceId}`)
-        } : undefined
+          label: "View Invoices →",
+          onClick: () => router.push(`/dashboard/invoices`)
+        } : undefined,
       });
       setShowAcceptModal(false);
       loadQuotation();
